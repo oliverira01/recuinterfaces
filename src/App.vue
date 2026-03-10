@@ -1,11 +1,28 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="contenedor-principal">
+    <Header></Header>
+    <main class="contenido">
+      <router-view />
+    </main>
+    <Footer></Footer>
+  </div>
 </template>
 
-<style scoped></style>
+<script setup>
+  import Header from "./components/Header.vue";
+  import Footer from "./components/Footer.vue";
+</script>
+
+<style scoped>
+  .contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 80%;
+    margin: auto;
+  }
+
+  .contenido {
+    flex: 1;
+  }
+</style>
