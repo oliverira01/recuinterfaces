@@ -92,6 +92,8 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import Swal from 'sweetalert2'
+
 
 const empleados = ref([])
 
@@ -116,19 +118,27 @@ function resetEmpleado() {
 }
 
 function validar() {
+
   if (!empleado.nombre) {
-    error.value = "El nombre es obligatorio"
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'El nombre es obligatorio'
+    })
     return false
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
   if (!empleado.email || !emailRegex.test(empleado.email)) {
-    error.value = "Email obligatorio con formato válido"
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Debe introducir un email válido'
+    })
     return false
   }
 
-  error.value = ''
   return true
 }
 
@@ -152,6 +162,14 @@ function addEmpleado() {
 
   }
 
+  Swal.fire({
+    icon: 'success',
+    title: 'Empleado guardado',
+    text: 'Los datos se han guardado correctamente',
+    timer: 1500,
+    showConfirmButton: false
+  })
+
   resetEmpleado()
 }
 
@@ -160,9 +178,28 @@ function selEmpleado(e) {
 }
 
 function delEmpleado(id) {
-  empleados.value = empleados.value.filter(e => e.id !== id)
 
-  if (empleado.id === id) resetEmpleado()
+  Swal.fire({
+    title: '¿Eliminar empleado?',
+    text: 'El empleado se eliminará',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar'
+  }).then((result) => {
+
+    if (result.isConfirmed) {
+
+      empleados.value = empleados.value.filter(e => e.id !== id)
+
+      Swal.fire(
+        'Eliminado',
+        'Empleado eliminado correctamente',
+        'success'
+      )
+
+    }
+
+  })
 }
 
 function getEmpleado() {
