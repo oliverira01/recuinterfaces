@@ -10,6 +10,18 @@ const router = createRouter({
       component: IniCio
     },
     {
+      path: "/empleados",
+      component: EmpLeados
+    },
+    {
+      path: "/tareas",
+      component: TaReas
+    },
+    {
+      path: "/estadisticas",
+      component: EstaDisticas
+    },
+    {
       path: "/about",
       component: AcerCa
     }
