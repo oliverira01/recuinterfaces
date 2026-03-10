@@ -152,11 +152,9 @@ function addEmpleado() {
       ...empleado,
       id: Date.now()
     }
-
     empleados.value.push(nuevo)
 
   } else {
-
     const index = empleados.value.findIndex(e => e.id === empleado.id)
     empleados.value[index] = { ...empleado }
 
@@ -196,9 +194,7 @@ function delEmpleado(id) {
         'Empleado eliminado correctamente',
         'success'
       )
-
     }
-
   })
 }
 
