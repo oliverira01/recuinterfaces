@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "fecha": "2026-03-10",
+    "titulo": "Preparar informe",
+    "descripcion": "Informe mensual",
+    "estado": "pendiente",
+    "prioridad": "alta",
+    "empleadoId": 1
+  },
+  {
+    "id": 2,
+    "fecha": "2026-03-11",
+    "titulo": "Revisar inventario",
+    "descripcion": "Control del almacén",
+    "estado": "en proceso",
+    "prioridad": "media",
+    "empleadoId": 2
+  },
+  {
+    "id": 3,
+    "fecha": "2026-03-12",
+    "titulo": "Llamar clientes",
+    "descripcion": "Seguimiento ventas",
+    "estado": "finalizado",
+    "prioridad": "baja",
+    "empleadoId": 3
+  }
+]

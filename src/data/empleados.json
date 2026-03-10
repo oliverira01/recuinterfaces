@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "apellidos": "Oliveira Vilar",
+    "nombre": "Alexandre",
+    "email": "oliveira@empresa.com",
+    "movil": "600123456",
+    "puesto": "RRHH"
+  },
+  {
+    "id": 2,
+    "apellidos": "Marcos Durán",
+    "nombre": "Ainhoa",
+    "email": "aifrik@empresa.com",
+    "movil": "611234567",
+    "puesto": "Contabilidad"
+  },
+  {
+    "id": 3,
+    "apellidos": "Fuentes Vila",
+    "nombre": "Daniel",
+    "email": "lune@empresa.com",
+    "movil": "622345678",
+    "puesto": "Almacén"
+  },
+  {
+    "id": 4,
+    "apellidos": "Curras Rodriguez",
+    "nombre": "Diego",
+    "email": "lovetherians@empresa.com",
+    "movil": "622345678",
+    "puesto": "Almacén"
+  },
+  {
+    "id": 5,
+    "apellidos": "Meijueiro Aravena",
+    "nombre": "Pedro",
+    "email": "serahthegreatwizard@empresa.com",
+    "movil": "622345678",
+    "puesto": "Almacén"
+  }
+]
