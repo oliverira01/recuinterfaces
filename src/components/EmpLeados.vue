@@ -1,275 +1,231 @@
 <template>
-    <!-- Contenedor principal usando Bootstrap -->
-    <div class="container mt-4">
-        <h2 class="mb-3">Gestión de empleados</h2>
+  <div class="container mt-4">
+    <h2 class="mb-3">Gestión de empleados</h2>
+  <div class="row">
 
-        <!-- Grid de Bootstrap para separar formulario y tabla -->
-        <div class="row">
+  <!--FORMULARIO-->
+  <div class="col-md-4">
+    <form @submit.prevent="addEmpleado" class="card p-3 shadow">
 
-        <!-- ================= FORMULARIO ================= -->
+      <h4>Empleado</h4>
 
-        <div class="col-md-4">
-        <!-- submit.prevent evita que la página se recargue -->
-        <form @submit.prevent="addEmpleado" class="card p-3 shadow">
+      <div class="mb-2">
+        <label>Nombre</label>
+        <input v-model="empleado.nombre" class="form-control">
+      </div>
 
-        <h4>Empleado</h4>
+      <div class="mb-2">
+        <label>Apellidos</label>
+        <input v-model="empleado.apellidos" class="form-control">
+      </div>
 
-        <!-- Campo nombre con enlace reactivo mediante v-model -->
-        <div class="mb-2">
-            <label>Nombre</label>
-            <input v-model="empleado.nombre" class="form-control">
-        </div>
+      <div class="mb-2">
+        <label>Email</label>
+        <input v-model="empleado.email" class="form-control">
+      </div>
 
-        <!-- Campo apellidos -->
-        <div class="mb-2">
-            <label>Apellidos</label>
-            <input v-model="empleado.apellidos" class="form-control">
-        </div>
+      <div class="mb-2">
+        <label>Móvil</label>
+        <input v-model="empleado.movil" class="form-control">
+      </div>
 
-        <!-- Campo email -->
-        <div class="mb-2">
-            <label>Email</label>
-            <input v-model="empleado.email" class="form-control">
-        </div>
+      <div class="mb-2">
+        <label>Puesto</label>
+        <select v-model="empleado.puesto" class="form-control">
+          <option value="">Seleccione</option>
+          <option>RRHH</option>
+          <option>Contabilidad</option>
+          <option>Almacén</option>
+          <option>Ventas</option>
+        </select>
+      </div>
 
-        <!-- Campo móvil -->
-        <div class="mb-2">
-            <label>Móvil</label>
-            <input v-model="empleado.movil" class="form-control">
-        </div>
-
-        <!-- Select para elegir el puesto -->
-        <div class="mb-2">
-            <label>Puesto</label>
-            <select v-model="empleado.puesto" class="form-control">
-                <option value="">Seleccione</option>
-                <option>RRHH</option>
-                <option>Contabilidad</option>
-                <option>Almacén</option>
-                <option>Ventas</option>
-            </select>
-        </div>
-
-        <!-- Mensaje de error si existe -->
-        <p class="text-danger">{{ error }}</p>
-
-        <!-- Botón para guardar empleado -->
-        <button class="btn btn-primary w-100">
-            Guardar
-        </button>
+      <button class="btn btn-primary w-100">
+        Guardar
+      </button>
     </form>
-</div>
+  </div>
 
-<!-- ================= LISTADO DE EMPLEADOS ================= -->
-<div class="col-md-8">
-
-    <!-- Tabla que muestra los empleados -->
-    <table class="table table-striped">
-
-    <thead>
-        <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Puesto</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-        <!-- v-for recorre el array de empleados -->
+  <!--TABLA-->
+  <div class="col-md-8">
+    <table class="table table-striped shadow">
+      <thead>
+          <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Puesto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
         <tr v-for="e in empleados" :key="e.id">
-
-        <!-- Muestra nombre y apellidos -->
         <td>{{ e.nombre }} {{ e.apellidos }}</td>
-
-        <!-- Email del empleado -->
         <td>{{ e.email }}</td>
-
-        <!-- Puesto del empleado -->
         <td>{{ e.puesto }}</td>
-
-        <!-- Botones de acciones -->
         <td class="d-flex gap-2">
 
-        <!-- Cargar datos del empleado en el formulario -->
-        <button
-            class="btn btn-sm btn-warning"
-            @click="selEmpleado(e)"
-        >
-            Cargar
-        </button>
+      <button
+        class="btn btn-sm btn-warning"
+        @click="selEmpleado(e)"
+      >
+        Cargar
+      </button>
 
-        <!-- Eliminar empleado -->
-        <button
-            class="btn btn-sm btn-danger"
-            @click="delEmpleado(e.id)"
-        >
-            Eliminar
-        </button>
-        </td>
-        </tr>
-    </tbody>
+      <button
+        class="btn btn-sm btn-danger"
+        @click="delEmpleado(e.id)"
+      >
+        Eliminar
+      </button>
+      </td>
+    </tr>
+
+      </tbody>
     </table>
-    </div>
+  </div>
 </div>
 </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Swal from 'sweetalert2'
-import empleadosData from '../data/empleados.json'
+
+const API = 'http://localhost:3000/empleados'
 
 const empleados = ref([])
 
-onMounted(() => {
-  empleados.value = [...empleadosData]  // copia los datos del JSON para no modificarlo directamente
-})
-
-function guardarLocal() {
-  localStorage.setItem('empleados', JSON.stringify(empleados.value))
-}
-
-// Objeto reactivo que representa el empleado del formulario
 const empleado = reactive({
-  id: null,
-  apellidos: '',
-  nombre: '',
-  email: '',
-  movil: '',
-  puesto: ''
+id:null,
+apellidos:'',
+nombre:'',
+email:'',
+movil:'',
+puesto:''
 })
 
+/*CARGAR EMPLEADOS*/
+async function cargarEmpleados(){
+try{
+Swal.fire({
+title:'Cargando empleados...',
+allowOutsideClick:false,
+didOpen:()=>Swal.showLoading()
+})
 
-// Variable para mensajes de error
-const error = ref('')
+const res = await fetch(API)
+empleados.value = await res.json()
 
-
-// Función para limpiar el formulario
-function resetEmpleado() {
-  empleado.id = null
-  empleado.apellidos = ''
-  empleado.nombre = ''
-  empleado.email = ''
-  empleado.movil = ''
-  empleado.puesto = ''
+Swal.close()
+}catch(error){
+Swal.fire('Error','No se pudieron cargar empleados','error')
+}
 }
 
+onMounted(cargarEmpleados)
 
-// Función de validación del formulario
-function validar() {
+/*RESET FORM*/
+function resetEmpleado(){
 
-  // Validar nombre obligatorio
-  if (!empleado.nombre) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'El nombre es obligatorio'
-    })
-    return false
-  }
-
-  // Expresión regular para validar email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-  // Validar formato de email
-  if (!empleado.email || !emailRegex.test(empleado.email)) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Debe introducir un email válido'
-    })
-    return false
-  }
-
-  return true
+empleado.id=null
+empleado.apellidos=''
+empleado.nombre=''
+empleado.email=''
+empleado.movil=''
+empleado.puesto=''
 }
 
-
-// Función para añadir o actualizar un empleado
-function addEmpleado() {
-
-  // Si la validación falla no continúa
-  if (!validar()) return
-
-  // Si el empleado no tiene id se crea uno nuevo
-  if (empleado.id === null) {
-
-    const nuevo = {
-      ...empleado,
-      id: Date.now() // id generado con timestamp
-    }
-
-    // Se añade al array de empleados
-    empleados.value.push(nuevo)
-
-    guardarLocal()
-
-  } else {
-
-    // Si ya tiene id se actualiza el empleado
-    const index = empleados.value.findIndex(e => e.id === empleado.id)
-    empleados.value[index] = { ...empleado }
-
-    guardarLocal()
-  }
-
-  // Mensaje de éxito
-  Swal.fire({
-    icon: 'success',
-    title: 'Empleado guardado',
-    text: 'Los datos se han guardado correctamente',
-    timer: 1500,
-    showConfirmButton: false
-  })
-
-  // Limpiar formulario
-  resetEmpleado()
+/*VALIDACION*/
+function validar(){
+if(!empleado.nombre){
+Swal.fire('Error','El nombre es obligatorio','error')
+return false
 }
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// Cargar datos de un empleado en el formulario
-function selEmpleado(e) {
-  Object.assign(empleado, e)
+if(!empleado.email || !emailRegex.test(empleado.email)){
+
+Swal.fire('Error','Debe introducir un email válido','error')
+return false
+}
+return true
+
 }
 
+/*ADD / EDIT*/
+async function addEmpleado(){
+if(!validar()) return
+try{
+if(empleado.id === null){
 
-// Eliminar empleado
-function delEmpleado(id) {
+/* POST */
+const res = await fetch(API,{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(empleado)
+})
 
-  // Confirmación antes de eliminar
-  Swal.fire({
-    title: '¿Eliminar empleado?',
-    text: 'El empleado se eliminará',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar'
-  }).then((result) => {
+const data = await res.json()
 
-    if (result.isConfirmed) {
+empleados.value.push(data)
 
-      // Filtra el array quitando el empleado eliminado
-      empleados.value = empleados.value.filter(e => e.id !== id)
+}else{
+/* PUT */
+await fetch(`${API}/${empleado.id}`,{
+method:'PUT',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(empleado)
+})
 
-      guardarLocal()
-      // Mensaje de eliminación correcta
-      Swal.fire(
-        'Eliminado',
-        'Empleado eliminado correctamente',
-        'success'
-      )
-    }
-  })
+cargarEmpleados()
+}
+Swal.fire({
+icon:'success',
+title:'Empleado guardado',
+timer:1500,
+showConfirmButton:false
+})
+
+resetEmpleado()
+
+}catch(error){
+Swal.fire('Error','No se pudo guardar el empleado','error')
 }
 
+}
 
-// Devuelve la lista de empleados
-function getEmpleado() {
-  return empleados.value
+/*CARGAR EMPLEADO EN FORM */
+function selEmpleado(e){
+Object.assign(empleado,e)
+
+}
+/*ELIMINAR*/
+async function delEmpleado(id){
+
+const result = await Swal.fire({
+title:'¿Eliminar empleado?',
+icon:'warning',
+showCancelButton:true,
+confirmButtonText:'Sí, eliminar'
+})
+
+if(!result.isConfirmed) return
+try{
+
+await fetch(`${API}/${id}`,{
+method:'DELETE'
+})
+
+empleados.value = empleados.value.filter(e=>e.id!==id)
+Swal.fire('Eliminado','Empleado eliminado','success')
+
+}catch(error){
+Swal.fire('Error','No se pudo eliminar','error')
+
+}
 }
 
 </script>
-
 <style scoped>
 </style>
