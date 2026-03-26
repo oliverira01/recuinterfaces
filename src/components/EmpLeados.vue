@@ -6,8 +6,16 @@
   <!--FORMULARIO-->
   <div class="col-md-4">
     <form @submit.prevent="addEmpleado" class="card p-3 shadow">
-
-      <h4>Empleado</h4>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">EMPLEADOS</h5>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          @click="resetEmpleado"
+        >
+          Limpiar
+        </button>
+      </div>
 
       <div class="mb-2">
         <label>Nombre</label>
@@ -68,14 +76,14 @@
         class="btn btn-sm btn-warning"
         @click="selEmpleado(e)"
       >
-        Cargar
+        <i class="bi bi-pencil"></i>
       </button>
 
       <button
         class="btn btn-sm btn-danger"
         @click="delEmpleado(e.id)"
       >
-        Eliminar
+        <i class="bi bi-trash"></i>
       </button>
       </td>
     </tr>
@@ -154,45 +162,52 @@ return true
 }
 
 /*ADD / EDIT*/
-async function addEmpleado(){
-if(!validar()) return
-try{
-if(empleado.id === null){
+async function addEmpleado() {
+  if (!validar()) return;
 
-/* POST */
-const res = await fetch(API,{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(empleado)
-})
+  const result = await Swal.fire({
+    title: "¿Guardar cambios?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Guardar",
+    cancelButtonText: "Cancelar",
+  });
+  if (!result.isConfirmed) return;
 
-const data = await res.json()
+  try {
+    if (empleado.id === null) {
+      const maxId = empleados.value.length
+        ? Math.max(...empleados.value.map(e => Number(e.id)))
+        : 0;
+      empleado.id = maxId + 1;
 
-empleados.value.push(data)
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(empleado), 
+      });
+      const data = await res.json();
+      empleados.value.push(data);
+    } else {
+      await fetch(`${API}/${empleado.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(empleado),
+      });
+      cargarEmpleados();
+    }
 
-}else{
-/* PUT */
-await fetch(`${API}/${empleado.id}`,{
-method:'PUT',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(empleado)
-})
+    Swal.fire({
+      icon: "success",
+      title: "Empleado guardado",
+      timer: 1500,
+      showConfirmButton: false,
+    });
 
-cargarEmpleados()
-}
-Swal.fire({
-icon:'success',
-title:'Empleado guardado',
-timer:1500,
-showConfirmButton:false
-})
-
-resetEmpleado()
-
-}catch(error){
-Swal.fire('Error','No se pudo guardar el empleado','error')
-}
-
+    resetEmpleado();
+  } catch (error) {
+    Swal.fire("Error", "No se pudo guardar el empleado", "error");
+  }
 }
 
 /*CARGAR EMPLEADO EN FORM */

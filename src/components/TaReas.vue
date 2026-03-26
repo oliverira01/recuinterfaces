@@ -6,7 +6,16 @@
   <!--FORMULARIO-->
   <div class="col-lg-4">
     <form @submit.prevent="addTarea" class="card p-3 shadow">
-      <h5 class="mb-3">Crear / Editar tarea</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Crear / Editar tarea</h5>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          @click="resetTarea"
+        >
+          Limpiar
+        </button>
+      </div>
 
       <div class="mb-2">
         <label>Fecha</label>
@@ -70,6 +79,11 @@
       🔍
     </button>
     </div>
+
+    <div v-if="empleadoEncontrado" class="mt-2 text-success">
+      Empleado: {{ empleadoEncontrado.nombre }} {{ empleadoEncontrado.apellidos }}
+    </div>
+
     </div>
 
     <button class="btn btn-primary w-100">
@@ -115,14 +129,14 @@
             class="btn btn-sm btn-warning"
             @click="selTarea(t)"
           >
-            Editar
+            <i class="bi bi-pencil"></i>
           </button>
 
           <button
             class="btn btn-sm btn-danger"
             @click="delTarea(t.id)"
           >
-            Eliminar
+             <i class="bi bi-trash"></i>
           </button>
         </td>
       </tr>
@@ -155,6 +169,8 @@ prioridad:'',
 empleadoId:null
 })
 
+/*PARA EL EMPLEADO DEL INPUT*/
+const empleadoEncontrado = ref(null)
 
 /*CARGAR DATOS*/
 async function cargarDatos(){
@@ -194,6 +210,7 @@ tarea.prioridad=''
 tarea.empleadoId=null
 
 empleadoValido.value=false
+empleadoEncontrado.value=null
 
 }
 
@@ -228,8 +245,17 @@ return true
 async function addTarea(){
 
 if(!validar()) return
-try{
 
+const result = await Swal.fire({
+title:"¿Guardar cambios?",
+icon:"question",
+showCancelButton:true,
+confirmButtonText:"Guardar",
+cancelButtonText:"Cancelar"
+})
+if(!result.isConfirmed) return
+
+try{
 if(tarea.id === null){
 
 const res = await fetch(API_TAREAS,{
@@ -237,38 +263,34 @@ method:'POST',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify(tarea)
 })
+
 const data = await res.json()
 
 tareas.value.push(data)
-
 }else{
-
 await fetch(`${API_TAREAS}/${tarea.id}`,{
 method:'PUT',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify(tarea)
 })
-
 cargarDatos()
-
 }
 Swal.fire('Guardado','Tarea guardada','success')
 
 resetTarea()
-
 }catch(error){
 Swal.fire('Error','No se pudo guardar la tarea','error')
 }
-
 }
 /*EDITAR*/
 
 function selTarea(t){
+  Object.assign(tarea,t)
 
-Object.assign(tarea,t)
-
-empleadoValido.value=true
-
+  empleadoValido.value=true
+  empleadoEncontrado.value = empleados.value.find(
+  e => Number(e.id) === Number(t.empleadoId)
+  )
 }
 
 /*DELETE*/
@@ -283,28 +305,39 @@ showCancelButton:true
 if(!result.isConfirmed) return
 
 try{
+if(tarea.id === id){
+resetTarea()
+}
+
 await fetch(`${API_TAREAS}/${id}`,{
 method:'DELETE'
 })
 
 tareas.value = tareas.value.filter(t=>t.id!==id)
+
 Swal.fire('Eliminado','Tarea eliminada','success')
 
 }catch(error){
 Swal.fire('Error','No se pudo eliminar','error')
+}
+}
 
-}
-}
 /*BUSCAR EMPLEADO*/
 function buscarEmpleado(){
 const emp = empleados.value.find(
   e => Number(e.id) === Number(tarea.empleadoId)
 )
+
 if(emp){
   empleadoValido.value = true
+  empleadoEncontrado.value = emp
+
 }else{
   empleadoValido.value = false
+  empleadoEncontrado.value = null
+
   Swal.fire('Error','Empleado no existe','error')
+
   tarea.empleadoId = null
 }
 }
