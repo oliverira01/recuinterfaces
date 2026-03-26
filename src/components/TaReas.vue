@@ -106,7 +106,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="t in tareas" :key="t.id">
+      <tr v-for="t in tareasPaginadas" :key="t.id">
         <td>{{ t.titulo }}</td>
         <td>{{ t.fecha }}</td>
         <td>{{ getEmpleadoNombre(t.empleadoId) }}</td>
@@ -124,14 +124,12 @@
         </td>
         <td>{{ t.prioridad }}</td>
         <td class="d-flex gap-2">
-
           <button
             class="btn btn-sm btn-warning"
             @click="selTarea(t)"
           >
             <i class="bi bi-pencil"></i>
           </button>
-
           <button
             class="btn btn-sm btn-danger"
             @click="delTarea(t.id)"
@@ -142,17 +140,39 @@
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+    <button
+      class="btn btn-secondary"
+      @click="paginaAnteriorTareas"
+      :disabled="paginaActualTareas === 1"
+    >
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <span>
+      Página {{ paginaActualTareas }} de {{ totalPaginasTareas }}
+    </span>
+    <button
+      class="btn btn-secondary"
+      @click="siguientePaginaTareas"
+      :disabled="paginaActualTareas === totalPaginasTareas"
+    >
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
 </div>
 </div>
 </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import Swal from 'sweetalert2'
 
 const API_TAREAS = 'http://localhost:3000/tareas'
 const API_EMPLEADOS = 'http://localhost:3000/empleados'
+
+const paginaActualTareas = ref(1)
+const tareasPorPagina = 10
 
 const tareas = ref([])
 const empleados = ref([])
@@ -197,6 +217,31 @@ Swal.fire('Error','No se pudieron cargar los datos','error')
 }
 
 onMounted(cargarDatos)
+
+/*PAGINACIÓN*/
+const tareasPaginadas = computed(() => {
+  const inicio = (paginaActualTareas.value - 1) * tareasPorPagina
+  const fin = inicio + tareasPorPagina
+  return tareas.value.slice(inicio, fin)
+})
+
+/*TOTAL PÁGINAS*/
+const totalPaginasTareas = computed(() => {
+  return Math.ceil(tareas.value.length / tareasPorPagina)
+})
+
+/*SIGUIENTE / ANTERIOR*/
+function siguientePaginaTareas(){
+  if(paginaActualTareas.value < totalPaginasTareas.value){
+    paginaActualTareas.value++
+  }
+}
+
+function paginaAnteriorTareas(){
+  if(paginaActualTareas.value > 1){
+    paginaActualTareas.value--
+  }
+}
 
 /*RESET*/
 function resetTarea(){

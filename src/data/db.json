@@ -39,6 +39,62 @@
       "email": "serahthegreatwizard@empresa.com",
       "movil": "345654345",
       "puesto": "Contabilidad"
+    },
+    {
+      "id": "6",
+      "apellidos": "Collazo",
+      "nombre": "Paula",
+      "email": "ilovetaylor@empresa.com",
+      "movil": "633456789",
+      "puesto": "Ventas"
+    },
+    {
+      "id": "7",
+      "apellidos": "Geffael",
+      "nombre": "Yago",
+      "email": "yakymtg@empresa.com",
+      "movil": "984567213",
+      "puesto": "Almacén"
+    },
+    {
+      "id": "8",
+      "apellidos": "Vila ",
+      "nombre": "Ainhoa",
+      "email": "haganmecarro@empresa.com",
+      "movil": "609878912",
+      "puesto": "RRHH"
+    },
+    {
+      "id": "9",
+      "apellidos": "Bouzón",
+      "nombre": "Raquel",
+      "email": "nomeabandonen@empresa.com",
+      "movil": "673859203",
+      "puesto": "Contabilidad"
+    },
+    {
+      "id": "10",
+      "apellidos": "Sanmartín",
+      "nombre": "Mateo",
+      "email": "futmateoXx@empresa.com",
+      "movil": "465738475",
+      "puesto": "Ventas"
+    },
+    {
+      "id": "11",
+      "apellidos": "Balado",
+      "nombre": "Alejandro",
+      "email": "baladitocapito@empresa.com",
+      "movil": "234567890",
+      "puesto": "Ventas"
+    },
+    {
+      "id": "12",
+      "apellidos": "JORGE",
+      "nombre": "Jorge",
+      "email": "asedienazzaro@empresa.com",
+      "movil": "245673845",
+      "puesto": "Almacén"
     }
   ],
   "tareas": [

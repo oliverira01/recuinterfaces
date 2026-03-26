@@ -66,38 +66,57 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="e in empleados" :key="e.id">
-        <td>{{ e.nombre }} {{ e.apellidos }}</td>
-        <td>{{ e.email }}</td>
-        <td>{{ e.puesto }}</td>
-        <td class="d-flex gap-2">
-
-      <button
-        class="btn btn-sm btn-warning"
-        @click="selEmpleado(e)"
-      >
-        <i class="bi bi-pencil"></i>
-      </button>
-
-      <button
-        class="btn btn-sm btn-danger"
-        @click="delEmpleado(e.id)"
-      >
-        <i class="bi bi-trash"></i>
-      </button>
-      </td>
-    </tr>
-
+        <tr v-for="e in empleadosPaginados" :key="e.id">
+          <td>{{ e.nombre }} {{ e.apellidos }}</td>
+          <td>{{ e.email }}</td>
+          <td>{{ e.puesto }}</td>
+          <td class="d-flex gap-2">
+            <button
+              class="btn btn-sm btn-warning"
+              @click="selEmpleado(e)"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              @click="delEmpleado(e.id)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+      <button
+        class="btn btn-secondary"
+        @click="paginaAnterior"
+        :disabled="paginaActual === 1"
+      >
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <span>
+      Página {{ paginaActual }} de {{ totalPaginas }}
+      </span>
+      <button
+        class="btn btn-secondary"
+        @click="siguientePagina"
+        :disabled="paginaActual === totalPaginas"
+      >
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
   </div>
 </div>
 </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import Swal from 'sweetalert2'
+
+const paginaActual = ref(1)
+const empleadosPorPagina = 10
 
 const API = 'http://localhost:3000/empleados'
 
@@ -131,6 +150,31 @@ Swal.fire('Error','No se pudieron cargar empleados','error')
 }
 
 onMounted(cargarEmpleados)
+
+/*PAGINACIÓN*/
+const empleadosPaginados = computed(() => {
+  const inicio = (paginaActual.value - 1) * empleadosPorPagina
+  const fin = inicio + empleadosPorPagina
+  return empleados.value.slice(inicio, fin)
+})
+
+/*TOTAL PÁGINAS*/
+const totalPaginas = computed(() => {
+  return Math.ceil(empleados.value.length / empleadosPorPagina)
+})
+
+/*SIGUIENTE / ANTERIOR*/
+function siguientePagina(){
+  if(paginaActual.value < totalPaginas.value){
+    paginaActual.value++
+  }
+}
+
+function paginaAnterior(){
+  if(paginaActual.value > 1){
+    paginaActual.value--
+  }
+}
 
 /*RESET FORM*/
 function resetEmpleado(){
